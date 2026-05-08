@@ -14,9 +14,20 @@ st.markdown("""
     .back-btn div.stButton > button { border-radius: 8px !important; width: 160px !important; height: 48px !important; aspect-ratio: auto !important; font-size: 1rem !important; margin-bottom: 20px; }
     .quiz-area div.stButton > button { border-radius: 8px !important; width: 100% !important; height: auto !important; aspect-ratio: auto !important; padding: 1rem !important; font-weight: 400 !important; text-align: left !important; }
     div.stButton > button { background-color: white !important; color: #4a5d4a !important; border: 2px solid #e0ede0 !important; box-shadow: 0 4px 12px rgba(120, 146, 120, 0.1) !important; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .feedback-box { background-color: #fff9e6; border-left: 5px solid #ffcc00; padding: 1.5rem; border-radius: 8px; margin-top: 1rem; color: #4a5d4a; }
+    
+    /* 解説エリアのデザインと余白設定 */
+    .feedback-box { 
+        background-color: #fff9e6; 
+        border-left: 5px solid #ffcc00; 
+        padding: 1.5rem; 
+        border-radius: 8px; 
+        margin-top: 1rem; 
+        margin-bottom: 2rem; /* ② 次のボタンとの間隔を確保 */
+        color: #4a5d4a; 
+    }
     .feedback-lightbulb { font-size: 1.5rem; margin-right: 10px; }
     .explanation-text { margin-top: 10px; font-size: 0.95rem; line-height: 1.6; }
+    
     .list-row { display: flex; justify-content: space-between; padding: 1rem 0.5rem; border-bottom: 1px solid #eef5ee; font-size: 1rem; }
     .list-header { display: flex; justify-content: space-between; padding: 0.8rem 0.5rem; border-bottom: 2px solid #4a5d4a; font-weight: bold; }
     .col-no { width: 10%; color: #4a5d4a !important; }
@@ -25,7 +36,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. データ管理（選択肢別解説データ） ---
+# --- 2. データ管理 ---
 if 'all_questions' not in st.session_state:
     raw_data = [
         ("うるさい", ["活気がある", "元気がある", "賑やか", "声が通る"], "活気がある", {
@@ -34,7 +45,7 @@ if 'all_questions' not in st.session_state:
             "賑やか": "単なる状況説明に近く、個人の「うるささ」というトゲを魅力に変えるには少し弱いです。",
             "声が通る": "身体的特徴のみを指しており、その場の雰囲気や内面の活力を肯定する表現には至りません。"
         }),
-        ("理屈っぽい", ["論理的である", "頭が良い", "説明が丁寧", "こだわりがある"], "論理적である", {
+        ("理屈っぽい", ["論理的である", "頭が良い", "説明が丁寧", "こだわりがある"], "論理的である", {
             "論理的である": "正解です。面倒な「理屈」という印象を、知的な強みである「論理」へ昇華させた言葉です。",
             "頭が良い": "少し抽象的すぎます。理屈っぽさの核である「筋道の通った思考」を指す言葉を選びましょう。",
             "説明が丁寧": "行動への評価としては良いですが、性格や思考の性質を言い換える言葉としては「論理的」が適切です。",
@@ -53,8 +64,7 @@ if 'all_questions' not in st.session_state:
             "ぶれない": "行動の状態を指す言葉です。人格や在り方の美しさとして表現するなら「自分を持っている」が深みがあります。"
         })
     ]
-    # 簡易的に100問分作成（実際は各問に固有データを入れる想定）
-    while len(raw_data) < 100: raw_data.append(raw_data[0])
+    while len(raw_data) < 100: raw_data.append(raw_data[len(raw_data)%4])
     st.session_state.all_questions = [{"id": i, "word": d[0], "options": d[1], "answer": d[2], "explanations": d[3]} for i, d in enumerate(raw_data)]
 
 if 'favorites' not in st.session_state: st.session_state.favorites = set()
@@ -102,14 +112,12 @@ elif st.session_state.page == "クイズ":
 
     if st.session_state.get('show_result'):
         sel = st.session_state.selected_option
-        is_correct = (sel == q['answer'])
-        # 各選択肢に合わせた個別の解説を抽出
-        exp_message = q['explanations'].get(sel, "その言葉も一つの捉え方ですが、より適した表現を考えてみましょう。")
-        header_text = f"正解です！: {q['answer']}" if is_correct else f"「{sel}」を選びましたが、正解は「{q['answer']}」でした。"
+        exp_message = q['explanations'].get(sel, "適した表現を考えてみましょう。")
         
+        # ① 指定された文言を削除し、正解のみを表示
         st.markdown(f"""
             <div class="feedback-box">
-                <div style="font-weight: bold;"><span class="feedback-lightbulb">💡</span> {header_text}</div>
+                <div style="font-weight: bold;"><span class="feedback-lightbulb">💡</span> 正解: {q['answer']}</div>
                 <div class="explanation-text">
                     <b>【選択した言葉の解説】</b><br>{exp_message}
                 </div>
@@ -129,3 +137,15 @@ elif st.session_state.page == "一覧表":
     st.markdown('<div class="list-header"><div class="col-no">No.</div><div class="col-word">トゲのある言葉</div><div class="col-ans">美しい言葉</div></div>', unsafe_allow_html=True)
     for i, q in enumerate(st.session_state.all_questions[:100]):
         st.markdown(f'<div class="list-row"><div class="col-no">{i+1}</div><div class="col-word">{q["word"]}</div><div class="col-ans">{q["answer"]}</div></div>', unsafe_allow_html=True)
+
+elif st.session_state.page == "栞":
+    st.markdown('<div class="back-btn">', unsafe_allow_html=True)
+    if st.button("ホームへ戻る"): change_page("ホーム")
+    st.markdown('</div>', unsafe_allow_html=True)
+    st.subheader("🏷️ 栞（お気に入り）")
+    if not st.session_state.favorites:
+        st.write("まだ栞はありません。")
+    else:
+        for q_id in st.session_state.favorites:
+            q = st.session_state.all_questions[q_id]
+            st.markdown(f'<div style="padding:15px; border-bottom:1px solid #eee; color: #4a5d4a;">🏷️ <b>{q["word"]}</b> → {q["answer"]}</div>', unsafe_allow_html=True)
