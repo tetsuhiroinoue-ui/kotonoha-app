@@ -5,40 +5,48 @@ st.set_page_config(page_title="言の葉🌿", page_icon="🌿")
 st.markdown("""
     <style>
     /* 全体の背景 */
-    .stApp { background-color: #f7faf7; }
+    .stApp { background-color: #f8faf8; }
     
-    /* ボタンのデザイン */
-    .stButton>button { 
-        border-radius: 20px; border: 2px solid #789278; 
-        background-color: white; color: #2e3b2e; width: 100%; font-weight: bold;
-        padding: 0.5rem;
-    }
-    
-    /* エラー/警告/成功メッセージの文字色をクッキリさせる */
-    /* 1. 不正解（警告） */
-    .stAlert {
-        border-radius: 15px;
-        color: #212529 !important; /* 真っ黒に近いグレーで視認性アップ */
-    }
-    
-    /* 2. 成功/正解 */
-    .st-ae { color: #155724 !important; } 
-    
-    /* 3. 警告/不正解 */
-    .st-af { color: #856404 !important; }
+    /* タイトル周り */
+    h1 { color: #1b261b !important; font-size: 2.2rem !important; }
+    .stCaption { color: #556b55 !important; font-size: 1rem; }
 
-    /* 文字の見やすさ向上 */
-    p, li, span {
+    /* 選択肢ボタンのデザイン：枠を消して影と色で表現 */
+    .stButton>button { 
+        border-radius: 12px; 
+        border: none; 
+        background-color: #ffffff; 
+        color: #2e3b2e; 
+        width: 100%; 
+        font-weight: bold;
+        padding: 0.7rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        transition: all 0.2s ease;
+    }
+    .stButton>button:hover {
+        background-color: #eef3ee;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transform: translateY(-1px);
+    }
+    
+    /* 回答項目のデザイン：枠を外しておしゃれに */
+    .result-container {
+        background-color: rgba(255, 255, 255, 0.6);
+        border-left: 5px solid #789278;
+        padding: 1.5rem;
+        border-radius: 0 15px 15px 0;
+        margin-top: 1rem;
+    }
+
+    /* 文字の見やすさ */
+    p, li, span, div {
         color: #2e3b2e !important;
-        font-weight: 500;
+        line-height: 1.7;
     }
     
-    h3, h1 { color: #1b261b !important; }
-    
-    /* 枠内の文字を特に見やすく */
-    .stMarkdown div p {
-        line-height: 1.6;
-    }
+    /* 成功・警告のテキスト色 */
+    .success-text { color: #2d5a27; font-weight: bold; font-size: 1.1rem; }
+    .warning-text { color: #856404; font-weight: bold; font-size: 1.1rem; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -63,10 +71,10 @@ questions = [
         "options": ["頭が良い", "論理的である", "説明が丁寧", "こだわりがある"],
         "answer": "論理的である",
         "feedback": {
-            "頭が良い": "抽象的すぎて、相手は『バカにされている（煙に巻こうとしている）』と警戒してしまう可能性があります。",
-            "論理的である": "【最適解の理由】「理屈っぽい」という攻撃的な言葉を、客観的な「能力（ロジカルシンキング）」に置き換えています。感情を排除し、相手の思考プロセスそのものを尊重する姿勢が伝わります。",
+            "頭が良い": "抽象的すぎて、相手は『バカにされている』と警戒してしまう可能性があります。",
+            "論理的である": "【最適解の理由】攻撃的な言葉を、客観的な「能力（ロジカルシンキング）」に置き換えています。感情を排除し、思考プロセスを尊重する姿勢が伝わります。",
             "説明が丁寧": "受け手によっては『話が長い』という不満の裏返しと取られ、さらに説明を重ねられる悪循環を招くことがあります。",
-            "こだわりがある": "専門性は評価できますが、会話のキャッチボールにおいて「理屈をこねている」状態への解決策としては少し焦点がズレます。"
+            "こだわりがある": "専門性は評価できますが、会話のキャッチボールにおいて理屈をこねている状態の解決策としては焦点がズレます。"
         }
     },
     {
@@ -74,10 +82,10 @@ questions = [
         "options": ["好奇心が旺盛", "行動が早い", "流行に敏感", "多趣味"],
         "answer": "好奇心が旺盛",
         "feedback": {
-            "好奇心が旺盛": "【最適解の理由】「続かない（継続の欠如）」というネガティブな結果ではなく、「新しいものを見つける（探索の意欲）」というポジティブな動機に光を当てます。本人の内面的なエネルギーを最も肯定できる表現です。",
-            "行動が早い": "着手の速さは伝わりますが、「すぐに投げ出す」ことへのフォローになっていないため、無責任な印象が残る場合があります。",
-            "流行に敏感": "外面的な影響を受けやすいというニュアンスが含まれ、本人の主体的な意志を低く見積もってしまう懸念があります。",
-            "多趣味": "状態の肯定にはなりますが、一つのことを深く掘り下げられないことへの劣等感を払拭するまでには至りません。"
+            "好奇心が旺盛": "【最適解の理由】「続かない」という結果ではなく、「新しいものを見つける探索意欲」に光を当てます。本人のエネルギーを最も肯定できる表現です。",
+            "行動が早い": "着手の速さは伝わりますが、「すぐに投げ出す」ことへのフォローにならないため、無責任な印象が残る場合があります。",
+            "流行に敏感": "外面的な影響を受けやすいというニュアンスが含まれ、本人の主体性を低く見積もる懸念があります。",
+            "多趣味": "状態の肯定にはなりますが、一つのことを掘り下げられない劣等感を払拭する力は弱めです。"
         }
     },
     {
@@ -85,9 +93,9 @@ questions = [
         "options": ["意思が強い", "真面目", "自分を持っている", "ぶれない"],
         "answer": "自分を持っている",
         "feedback": {
-            "意思が強い": "力強い表現ですが、衝突している場面では「意固地」「柔軟性がない」という対立構造を強めてしまうことがあります。",
+            "意思が強い": "力強い表現ですが、衝突している場面では「柔軟性がない」という対立構造を強めてしまうことがあります。",
             "真面目": "規律を守る印象は与えますが、頑固な人が大切にしている「独自のこだわり」や「哲学」を表現しきれません。",
-            "自分を持っている": "【最適解の理由】「他人の意見を聞かない」という拒絶を、「自分の軸がある（自立）」という美徳に転換します。相手のアイデンティティを尊重しつつ、対等な関係を築くための魔法の言葉です。",
+            "自分を持っている": "【最適解の理由】「他人の意見を聞かない」という拒絶を、「自分の軸がある（自立）」という美徳に転換します。相手を尊重しつつ対等な関係を築く魔法の言葉です。",
             "ぶれない": "目標に対しては良い言葉ですが、日常の性格的な頑なさを表現すると、少し冷たい印象を与える場合があります。"
         }
     }
@@ -98,33 +106,43 @@ if 'index' not in st.session_state:
 
 if st.session_state.index < len(questions):
     q = questions[st.session_state.index]
-    st.write(f"### 問題 {st.session_state.index + 1} / {len(questions)}")
+    st.write(f"### 問題 {st.session_state.index + 1}")
     
-    st.info(f"トゲのある言葉：  \n**{q['word']}**")
-    st.write("どの言葉に言い換えるのが、最も心地よく伝わるでしょうか？")
-    
+    st.markdown(f"""
+        <div style="background-color: white; padding: 1.2rem; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 1rem;">
+            <span style="font-size: 0.9rem; color: #789278;">トゲのある言葉：</span><br>
+            <strong style="font-size: 1.4rem; color: #d9534f;">{q['word']}</strong>
+        </div>
+    """, unsafe_allow_html=True)
+
     cols = st.columns(2)
     for i, option in enumerate(q['options']):
+        # 頭に数字を振る
+        numbered_option = f"{i+1}. {option}"
         with cols[i % 2]:
-            if st.button(option, key=f"btn_{st.session_state.index}_{i}"):
+            if st.button(numbered_option, key=f"btn_{st.session_state.index}_{i}"):
                 st.session_state.selected_option = option
+                st.session_state.selected_index = i + 1
                 if option == q['answer']:
                     st.session_state.score += 1
                 st.session_state.show_result = True
 
     if st.session_state.show_result:
         selected = st.session_state.selected_option
+        sel_idx = st.session_state.selected_index
+        
+        # 回答セクション（おしゃれな枠なしデザイン）
+        st.markdown('<div class="result-container">', unsafe_allow_html=True)
         if selected == q['answer']:
-            st.success(f"**【{selected}】を選択： 🌿 言の葉として美しい選択です。**")
+            st.markdown(f'<span class="success-text">🌿 {sel_idx}. {selected}： 正解です</span>', unsafe_allow_html=True)
         else:
-            # 警告枠内の文字色も考慮してデザイン
-            st.warning(f"**【{selected}】を選択： 別の響き方を確認しましょう。**")
+            st.markdown(f'<span class="warning-text">💡 {sel_idx}. {selected}： 別の視点</span>', unsafe_allow_html=True)
         
-        st.markdown(f"#### 🔍 なぜその言葉（選択肢）なのか？")
-        st.write(q['feedback'][selected])
+        st.markdown(f"**【解説】** \n{q['feedback'][selected]}")
+        st.markdown('</div>', unsafe_allow_html=True)
         
-        st.markdown("---")
-        if st.button("次の知恵へ進む ➔"):
+        st.write("")
+        if st.button("次の問題へ ➔"):
             st.session_state.index += 1
             st.session_state.show_result = False
             st.rerun()
