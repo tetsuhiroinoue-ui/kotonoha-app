@@ -10,16 +10,18 @@ st.markdown("""
     .stApp { background-color: #fdfefd; background-image: radial-gradient(#eef5ee 1px, transparent 1px); background-size: 20px 20px; }
     h1 { color: #4a5d4a !important; text-align: center; margin-bottom: 0.5rem !important; font-size: 2.2rem !important; }
     .sub-title { color: #789278 !important; text-align: center; font-size: 1.1rem; margin-bottom: 2.5rem; }
-    .home-nav div.stButton > button { border-radius: 50% !important; width: 130px !important; height: 130px !important; }
-    .back-btn div.stButton > button { border-radius: 8px !important; width: 160px !important; height: 48px !important; }
-    .quiz-area div.stButton > button { border-radius: 8px !important; width: 100% !important; padding: 1rem !important; text-align: left !important; }
-    div.stButton > button { background-color: white !important; color: #4a5d4a !important; border: 2px solid #e0ede0 !important; box-shadow: 0 4px 12px rgba(120, 146, 120, 0.1) !important; transition: all 0.3s ease; }
-    .feedback-box { background-color: #fff9e6; border-left: 5px solid #ffcc00; padding: 1.5rem; border-radius: 8px; margin-top: 1rem; color: #4a5d4a; }
-    .list-row { display: flex; justify-content: space-between; padding: 1rem 0.5rem; border-bottom: 1px solid #eef5ee; font-size: 0.95rem; }
-    .list-header { display: flex; justify-content: space-between; padding: 0.8rem 0.5rem; border-bottom: 2px solid #4a5d4a; font-weight: bold; background: #f8faf8; }
-    .col-no { width: 8%; }
-    .col-word { width: 32%; font-weight: bold; }
-    .col-ans { width: 60%; }
+    .home-nav div.stButton > button { border-radius: 50% !important; width: 130px !important; height: 130px !important; aspect-ratio: 1 / 1 !important; }
+    .back-btn div.stButton > button { border-radius: 8px !important; width: 160px !important; height: 48px !important; aspect-ratio: auto !important; font-size: 1rem !important; margin-bottom: 20px; }
+    .quiz-area div.stButton > button { border-radius: 8px !important; width: 100% !important; height: auto !important; aspect-ratio: auto !important; padding: 1rem !important; font-weight: 400 !important; text-align: left !important; }
+    div.stButton > button { background-color: white !important; color: #4a5d4a !important; border: 2px solid #e0ede0 !important; box-shadow: 0 4px 12px rgba(120, 146, 120, 0.1) !important; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .feedback-box { background-color: #fff9e6; border-left: 5px solid #ffcc00; padding: 1.5rem; border-radius: 8px; margin-top: 1rem; margin-bottom: 2rem; color: #4a5d4a; }
+    .feedback-lightbulb { font-size: 1.5rem; margin-right: 10px; }
+    .explanation-text { margin-top: 10px; font-size: 0.95rem; line-height: 1.6; }
+    .list-row { display: flex; justify-content: space-between; padding: 1rem 0.5rem; border-bottom: 1px solid #eef5ee; font-size: 1rem; }
+    .list-header { display: flex; justify-content: space-between; padding: 0.8rem 0.5rem; border-bottom: 2px solid #4a5d4a; font-weight: bold; }
+    .col-no { width: 10%; color: #4a5d4a !important; }
+    .col-word { width: 35%; color: #4a5d4a !important; }
+    .col-ans { width: 55%; color: #4a5d4a !important; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -78,7 +80,6 @@ if 'all_questions' not in st.session_state:
         ("怒りっぽい", "正義感が強い / 情熱家である / 真剣に向き合っている"),
         ("未熟", "伸び代がある / 純粋である / 可能性に満ちている"),
         ("しつこい", "粘り強い / 根気がある / 一途である"),
-        ("無愛想な", "媚びない / 飾り気がない / 硬派な"),
         ("口うるさい", "細かい点まで目が届く / 指導熱心である / 向上心が高い"),
         ("反抗的", "自分の意見を持っている / 自立心が強い / 批判的思考ができる"),
         ("いい子ぶりっこ", "調和を重んじる / 気配り上手 / 礼儀正しい"),
@@ -89,7 +90,6 @@ if 'all_questions' not in st.session_state:
         ("目立ちたがり", "存在感がある / 自己表現が豊か / 華がある"),
         ("消極的", "思慮深い / 控えめである / 平和主義である"),
         ("わがまま", "意志がはっきりしている / 自分を大切にする / 主体性がある"),
-        ("不愛想な", "実直である / 媚びない / 落ち着いている"),
         ("愛想が良すぎる", "親しみやすい / 社交的である / サービス精神が旺盛"),
         ("ケチケチする", "無駄がない / 管理能力が高い / 堅実である"),
         ("ワンパターン", "安定感がある / 一貫性がある / 伝統を大切にする"),
@@ -97,19 +97,12 @@ if 'all_questions' not in st.session_state:
         ("引っ込み思案", "奥ゆかしい / 慎重である / 謙虚である"),
         ("欲張りな", "向上心がある / 意欲的である / 探究心が強い"),
         ("優しすぎる", "慈悲深い / 献身的である / 受容力がある"),
-        ("冷淡な", "冷静沈着である / 公平である / 理性的である"),
         ("不真面目", "遊び心がある / 柔軟である / 楽観的である"),
         ("心配性", "慎重である / 危機管理能力がある / 想像力が豊か"),
         ("無関心", "執着がない / 自立している / 自分の世界を持っている"),
-        ("ケチ臭い", "物を大切にする / 節約家である / 堅実である"),
         ("古風な", "趣がある / 伝統を大切にする / 落ち着いている"),
         ("プライドが高い", "自尊心が強い / 高潔である / 誇りを持っている"),
         ("無神経な", "物怖じしない / 大らかである / 精神がタフである"),
-        ("打算的な", "合理的である / 先を見通す力がある / 知的である"),
-        ("八方美人的な", "誰からも愛される / 調整上手である / 柔軟性が高い"),
-        ("地味な", "シックである / 控えめな美しさがある / 堅実である"),
-        ("幼稚な", "童心を持っている / 純粋である / 素直である"),
-        ("理屈に合わない", "直感的である / 感性を大切にしている / 独創的である"),
         ("頼りない", "守りたくなる / 優しさに溢れている / 謙虚である"),
         ("卑怯な", "戦略的である / 効率を重視する / 賢明である"),
         ("執念深い", "一つのことを忘れない / 粘り強い / 情熱が持続する"),
@@ -117,29 +110,39 @@ if 'all_questions' not in st.session_state:
         ("能無しの", "これからが楽しみな / 無垢な / 可能性を秘めた"),
         ("馬鹿正直", "一点の曇りもない / 誠実である / 信頼に値する"),
         ("強情な", "芯が強い / 信念がある / 意志を貫く"),
-        ("落ち着きのない", "活動的である / 活力に満ちている / 好奇心が旺盛"),
         ("変わり者", "個性的である / 独自の感性がある / 独創的である"),
         ("そっけない", "簡潔である / 媚びない / 実直である"),
         ("おどおどした", "謙虚である / 慎重である / 相手を敬っている"),
-        ("派手好きな", "華やかである / 存在感がある / 自己表現を楽しんでいる"),
         ("無茶な", "挑戦心がある / 勇敢である / 枠に囚われない"),
-        ("暗い雰囲気", "静寂を愛する / 落ち着きがある / ミステリアスな"),
         ("口が悪い", "率直である / 裏表がない / 正直である"),
         ("どんくさい", "丁寧である / 確実である / 大らかである"),
+        ("冷淡な", "冷静沈着である / 公平である / 理性的である"),
+        ("卑屈な", "謙虚である / 相手を立てるのがうまい / 慎重である"),
+        ("情に脆い", "慈悲深い / 感受性が豊か / 人情味がある"),
+        ("世間知らず", "純粋である / 固定観念がない / フレッシュな感性"),
+        ("強欲な", "向上心が強い / 意欲的である / ハングリー精神がある"),
+        ("陰気な", "物静かである / 思慮深い / 落ち着きがある"),
+        ("いいなり", "従順である / 適応力が高い / 協調性がある"),
+        ("出しゃばりな", "リーダーシップがある / 積極的である / 意欲的である"),
+        ("気まぐれな", "感受性が豊かである / 柔軟である / 直感的である"),
+        ("愛想が悪い", "媚びない / 実直である / 飾り気がない"),
+        ("疑り深い", "慎重である / 洞察力がある / リスク管理ができる"),
+        ("見栄っ張りな", "高みを目指している / 美意識が高い / 向上心がある")
     ]
     
     st.session_state.all_questions = []
     for i, (word, ans) in enumerate(data_list):
         options = [ans]
         while len(options) < 4:
-            dummy = data_list[(i + len(options)) % 100][1]
+            import random
+            dummy = data_list[random.randint(0, 99)][1]
             if dummy not in options: options.append(dummy)
-        import random
         random.shuffle(options)
         st.session_state.all_questions.append({
             "id": i, "word": word, "options": options, "answer": ans
         })
 
+if 'favorites' not in st.session_state: st.session_state.favorites = set()
 if 'page' not in st.session_state: st.session_state.page = "ホーム"
 if 'quiz_index' not in st.session_state: st.session_state.quiz_index = 0
 
@@ -147,37 +150,65 @@ def change_page(page_name):
     st.session_state.page = page_name
     st.session_state.show_result = False
 
+# --- 3. メイン表示 ---
 st.title("言の葉 🌿")
 
-# --- ホーム ---
 if st.session_state.page == "ホーム":
     st.markdown('<p class="sub-title">〜トゲのある言葉を、美しい言葉に〜</p>', unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
+    st.markdown('<div class="home-nav">', unsafe_allow_html=True)
+    col1, col2, col3 = st.columns(3)
     with col1:
-        if st.button("🌿\n問題へ"): change_page("クイズ")
+        if st.button("🌿\n問題"): change_page("クイズ")
     with col2:
         if st.button("📖\n一覧表"): change_page("一覧表")
+    with col3:
+        if st.button("🏷️\n栞"): change_page("栞")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# --- クイズ ---
 elif st.session_state.page == "クイズ":
-    if st.button("← ホーム"): change_page("ホーム")
-    q = st.session_state.all_questions[st.session_state.quiz_index]
-    st.markdown(f'<div style="background:white;padding:2rem;border-radius:15px;border:1px solid #eef5ee;text-align:center;margin-bottom:2rem;"><p>第 {st.session_state.quiz_index+1} / 100 問</p><h2>{q["word"]}</h2></div>', unsafe_allow_html=True)
-    for opt in q['options']:
-        if st.button(opt):
-            st.session_state.selected = opt
-            st.session_state.show_result = True
+    st.markdown('<div class="back-btn">', unsafe_allow_html=True)
+    if st.button("ホームへ戻る"): change_page("ホーム")
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    idx = st.session_state.quiz_index
+    q = st.session_state.all_questions[idx]
+    
+    st.markdown(f'<div style="background: white; padding: 2rem; border-radius: 20px; border: 1px solid #eef5ee; text-align: center; margin-bottom: 2rem;"><p style="color: #789278;">第 {idx+1} 問 / 100</p><h2 style="color: #4a5d4a; font-weight: bold;">{q["word"]}</h2></div>', unsafe_allow_html=True)
+
+    st.markdown('<div class="quiz-area">', unsafe_allow_html=True)
+    col_left, col_right = st.columns(2)
+    for i, opt in enumerate(q['options']):
+        target_col = col_left if i < 2 else col_right
+        with target_col:
+            if st.button(opt, key=f"q_{i}"):
+                st.session_state.selected_option = opt
+                st.session_state.show_result = True
+    st.markdown('</div>', unsafe_allow_html=True)
+
     if st.session_state.get('show_result'):
-        color = "green" if st.session_state.selected == q['answer'] else "red"
-        st.markdown(f'<div class="feedback-box"><b>正解:</b> {q["answer"]}</div>', unsafe_allow_html=True)
-        if st.button("次へ ➔"):
-            st.session_state.quiz_index = (st.session_state.quiz_index + 1) % 100
+        st.markdown(f'<div class="feedback-box"><div style="font-weight: bold;"><span class="feedback-lightbulb">💡</span> 正解: {q["answer"]}</div></div>', unsafe_allow_html=True)
+        if st.button("次の言葉へ ➔"):
+            st.session_state.quiz_index = (idx + 1) % 100
             st.session_state.show_result = False
             st.rerun()
 
-# --- 一覧表 ---
 elif st.session_state.page == "一覧表":
-    if st.button("← ホーム"): change_page("ホーム")
-    st.markdown('<div class="list-header"><div class="col-no">No</div><div class="col-word">トゲのある言葉</div><div class="col-ans">美しい言い換え</div></div>', unsafe_allow_html=True)
-    for q in st.session_state.all_questions:
-        st.markdown(f'<div class="list-row"><div class="col-no">{q["id"]+1}</div><div class="col-word">{q["word"]}</div><div class="col-ans">{q["answer"]}</div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="back-btn">', unsafe_allow_html=True)
+    if st.button("ホームへ戻る"): change_page("ホーム")
+    st.markdown('</div>', unsafe_allow_html=True)
+    st.subheader("一覧表")
+    st.markdown('<div class="list-header"><div class="col-no">No.</div><div class="col-word">トゲのある言葉</div><div class="col-ans">美しい言葉</div></div>', unsafe_allow_html=True)
+    for i, q in enumerate(st.session_state.all_questions):
+        st.markdown(f'<div class="list-row"><div class="col-no">{i+1}</div><div class="col-word">{q["word"]}</div><div class="col-ans">{q["answer"]}</div></div>', unsafe_allow_html=True)
+
+elif st.session_state.page == "栞":
+    st.markdown('<div class="back-btn">', unsafe_allow_html=True)
+    if st.button("ホームへ戻る"): change_page("ホーム")
+    st.markdown('</div>', unsafe_allow_html=True)
+    st.subheader("🏷️ 栞（お気に入り）")
+    if not st.session_state.favorites:
+        st.write("まだ栞はありません。")
+    else:
+        for q_id in st.session_state.favorites:
+            q = st.session_state.all_questions[q_id]
+            st.markdown(f'<div style="padding:15px; border-bottom:1px solid #eee; color: #4a5d4a;">🏷️ <b>{q["word"]}</b> → {q["answer"]}</div>', unsafe_allow_html=True)
