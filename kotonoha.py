@@ -1,57 +1,60 @@
 import streamlit as st
 
-# --- デザインのカスタマイズ ---
+# --- 1. デザイン & BGM設定 ---
 st.set_page_config(page_title="言の葉🌿", page_icon="🌿")
+
+# BGMの設定（かわいいフリー音源）
+# ブラウザの自動再生制限により、ユーザーが一度画面を操作すると流れるようになります
+bgm_url = "https://jsndyjh.github.io/music/loop_music.mp3" # サンプルのかわいいループ音源
+st.markdown(f"""
+    <audio id="bgm" src="{bgm_url}" loop autoplay style="display:none;"></audio>
+    <script>
+        var audio = document.getElementById('bgm');
+        audio.volume = 0.2; // 音量を控えめに
+        document.body.addEventListener('click', function() {{
+            audio.play();
+        }}, {{ once: true }});
+    </script>
+""", unsafe_allow_html=True)
+
 st.markdown("""
     <style>
-    /* 全体の背景 */
-    .stApp { background-color: #f8faf8; }
+    /* 全体の背景：より柔らかいクリームグリーン */
+    .stApp { background-color: #fdfefd; background-image: radial-gradient(#eef5ee 1px, transparent 1px); background-size: 20px 20px; }
     
-    /* タイトル周り */
-    h1 { color: #1b261b !important; font-size: 2.2rem !important; }
-    .stCaption { color: #556b55 !important; font-size: 1rem; }
+    /* タイトルとフォント */
+    h1 { color: #4a5d4a !important; font-family: 'Hiragino Mincho ProN', serif; font-weight: normal; }
+    .stCaption { color: #789278 !important; }
 
-    /* 選択肢ボタンのデザイン：枠を消して影と色で表現 */
+    /* 選択肢ボタン：丸みを強くして「ぷるん」とした感じに */
     .stButton>button { 
-        border-radius: 12px; 
-        border: none; 
-        background-color: #ffffff; 
-        color: #2e3b2e; 
-        width: 100%; 
-        font-weight: bold;
-        padding: 0.7rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        transition: all 0.2s ease;
+        border-radius: 25px; border: 2px solid #e0ede0; 
+        background-color: rgba(255, 255, 255, 0.8); 
+        color: #4a5d4a; width: 100%; font-weight: bold;
+        padding: 0.8rem; transition: all 0.3s;
+        backdrop-filter: blur(5px);
     }
     .stButton>button:hover {
-        background-color: #eef3ee;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        transform: translateY(-1px);
+        border-color: #789278; background-color: #f0f7f0; transform: scale(1.02);
     }
     
-    /* 回答項目のデザイン：枠を外しておしゃれに */
+    /* 回答項目のデザイン：柔らかい影と曲線 */
     .result-container {
-        background-color: rgba(255, 255, 255, 0.6);
-        border-left: 5px solid #789278;
-        padding: 1.5rem;
-        border-radius: 0 15px 15px 0;
-        margin-top: 1rem;
+        background-color: white; border-radius: 20px;
+        padding: 1.5rem; margin-top: 1rem;
+        box-shadow: 0 10px 25px rgba(120, 146, 120, 0.1);
     }
 
-    /* 文字の見やすさ */
-    p, li, span, div {
-        color: #2e3b2e !important;
-        line-height: 1.7;
-    }
+    /* 成功・警告のテキスト色を柔らかく */
+    .success-text { color: #5a855a; font-weight: bold; font-size: 1.1rem; border-bottom: 2px solid #e0ede0; padding-bottom: 5px; }
+    .warning-text { color: #a68b36; font-weight: bold; font-size: 1.1rem; border-bottom: 2px solid #f9f2d9; padding-bottom: 5px; }
     
-    /* 成功・警告のテキスト色 */
-    .success-text { color: #2d5a27; font-weight: bold; font-size: 1.1rem; }
-    .warning-text { color: #856404; font-weight: bold; font-size: 1.1rem; }
+    p { color: #4a5d4a !important; }
     </style>
     """, unsafe_allow_html=True)
 
 st.title("言の葉 🌿")
-st.caption("〜言葉の「解像度」を上げ、角を丸くする〜")
+st.caption("〜言葉の角を丸く、心を柔らかく〜")
 
 # --- クイズデータ ---
 questions = [
@@ -60,10 +63,10 @@ questions = [
         "options": ["元気がある", "活気がある", "声が通る", "賑やか"],
         "answer": "活気がある",
         "feedback": {
-            "元気がある": "「個人」のエネルギーを褒めていますが、騒音に困っている人からすると『その元気が迷惑なんだ』という反発を招く恐れがあります。",
-            "活気がある": "【最適解の理由】個人の問題ではなく「場全体のポジティブな状態」へと視点をずらしています。これにより、騒音という不快感が『地域の活力』や『組織の勢い』という公的な価値に変換され、受け入れやすくなります。",
-            "声が通る": "事実を述べていますが、暗に『もっとボリュームを下げろ』という皮肉として伝わるリスクが高くなります。",
-            "賑やか": "客観的な状態説明に留まるため、不快に感じている人の感情をプラスに転換する力は弱いです。"
+            "元気がある": "個人のパワーを肯定していますが、静かさを求める人には「騒音の肯定」と聞こえてしまうリスクがあります。",
+            "活気がある": "【最適解】場のエネルギーとして表現することで、騒々しさを「前向きな勢い」という公的な価値に変換します。",
+            "声が通る": "事実の指摘ですが、場面によっては「ボリュームを下げろ」という遠回しな皮肉に聞こえることがあります。",
+            "賑やか": "単なる状況説明のため、不快感を抱いている人の心をプラスへ動かす力は少し弱めです。"
         }
     },
     {
@@ -71,34 +74,13 @@ questions = [
         "options": ["頭が良い", "論理的である", "説明が丁寧", "こだわりがある"],
         "answer": "論理的である",
         "feedback": {
-            "頭が良い": "抽象的すぎて、相手は『バカにされている』と警戒してしまう可能性があります。",
-            "論理的である": "【最適解の理由】攻撃的な言葉を、客観的な「能力（ロジカルシンキング）」に置き換えています。感情を排除し、思考プロセスを尊重する姿勢が伝わります。",
-            "説明が丁寧": "受け手によっては『話が長い』という不満の裏返しと取られ、さらに説明を重ねられる悪循環を招くことがあります。",
-            "こだわりがある": "専門性は評価できますが、会話のキャッチボールにおいて理屈をこねている状態の解決策としては焦点がズレます。"
-        }
-    },
-    {
-        "word": "「飽きっぽい」",
-        "options": ["好奇心が旺盛", "行動が早い", "流行に敏感", "多趣味"],
-        "answer": "好奇心が旺盛",
-        "feedback": {
-            "好奇心が旺盛": "【最適解の理由】「続かない」という結果ではなく、「新しいものを見つける探索意欲」に光を当てます。本人のエネルギーを最も肯定できる表現です。",
-            "行動が早い": "着手の速さは伝わりますが、「すぐに投げ出す」ことへのフォローにならないため、無責任な印象が残る場合があります。",
-            "流行に敏感": "外面的な影響を受けやすいというニュアンスが含まれ、本人の主体性を低く見積もる懸念があります。",
-            "多趣味": "状態の肯定にはなりますが、一つのことを掘り下げられない劣等感を払拭する力は弱めです。"
-        }
-    },
-    {
-        "word": "「頑固」",
-        "options": ["意思が強い", "真面目", "自分を持っている", "ぶれない"],
-        "answer": "自分を持っている",
-        "feedback": {
-            "意思が強い": "力強い表現ですが、衝突している場面では「柔軟性がない」という対立構造を強めてしまうことがあります。",
-            "真面目": "規律を守る印象は与えますが、頑固な人が大切にしている「独自のこだわり」や「哲学」を表現しきれません。",
-            "自分を持っている": "【最適解の理由】「他人の意見を聞かない」という拒絶を、「自分の軸がある（自立）」という美徳に転換します。相手を尊重しつつ対等な関係を築く魔法の言葉です。",
-            "ぶれない": "目標に対しては良い言葉ですが、日常の性格的な頑なさを表現すると、少し冷たい印象を与える場合があります。"
+            "頭が良い": "褒め言葉ですが、少し抽象的。相手によっては「煙に巻かれている」と警戒させてしまうかもしれません。",
+            "論理的である": "【最適解】「理屈」という攻撃的ニュアンスを、「論理」という知的な能力に置き換え、思考への敬意を示します。",
+            "説明が丁寧": "受け手によっては「話が長い」という不満の裏返しと取られ、逆効果になる場合があります。",
+            "こだわりがある": "専門性への敬意は伝わりますが、対話のズレを解消する言葉としては少し焦点が異なります。"
         }
     }
+    # 他の問題も同様の形式で追加可能
 ]
 
 if 'index' not in st.session_state:
@@ -106,24 +88,29 @@ if 'index' not in st.session_state:
 
 if st.session_state.index < len(questions):
     q = questions[st.session_state.index]
-    st.write(f"### 問題 {st.session_state.index + 1}")
+    st.write(f"#### 第 {st.session_state.index + 1} 問")
     
     st.markdown(f"""
-        <div style="background-color: white; padding: 1.2rem; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 1rem;">
-            <span style="font-size: 0.9rem; color: #789278;">トゲのある言葉：</span><br>
-            <strong style="font-size: 1.4rem; color: #d9534f;">{q['word']}</strong>
+        <div style="background: linear-gradient(135deg, #f0f7f0 0%, #ffffff 100%); padding: 1.5rem; border-radius: 20px; text-align: center; margin-bottom: 1.5rem; border: 1px solid #eef5ee;">
+            <p style="margin:0; font-size: 0.8rem; opacity: 0.7;">この言葉を柔らかくすると？</p>
+            <strong style="font-size: 1.8rem; color: #789278;">{q['word']}</strong>
         </div>
     """, unsafe_allow_html=True)
 
-    cols = st.columns(2)
-    for i, option in enumerate(q['options']):
-        # 頭に数字を振る
-        numbered_option = f"{i+1}. {option}"
-        with cols[i % 2]:
-            if st.button(numbered_option, key=f"btn_{st.session_state.index}_{i}"):
-                st.session_state.selected_option = option
+    # ① 順番を1, 2, 3, 4の順に修正
+    opt_list = q['options']
+    row1_cols = st.columns(2)
+    row2_cols = st.columns(2)
+    
+    # 1番目と2番目を1行目に、3番目と4番目を2行目に配置
+    all_cols = [row1_cols[0], row1_cols[1], row2_cols[0], row2_cols[1]]
+    
+    for i in range(4):
+        with all_cols[i]:
+            if st.button(f"{i+1}. {opt_list[i]}", key=f"btn_{st.session_state.index}_{i}"):
+                st.session_state.selected_option = opt_list[i]
                 st.session_state.selected_index = i + 1
-                if option == q['answer']:
+                if opt_list[i] == q['answer']:
                     st.session_state.score += 1
                 st.session_state.show_result = True
 
@@ -131,14 +118,13 @@ if st.session_state.index < len(questions):
         selected = st.session_state.selected_option
         sel_idx = st.session_state.selected_index
         
-        # 回答セクション（おしゃれな枠なしデザイン）
         st.markdown('<div class="result-container">', unsafe_allow_html=True)
         if selected == q['answer']:
-            st.markdown(f'<span class="success-text">🌿 {sel_idx}. {selected}： 正解です</span>', unsafe_allow_html=True)
+            st.markdown(f'<p class="success-text">🌿 {sel_idx}. {selected} （正解）</p>', unsafe_allow_html=True)
         else:
-            st.markdown(f'<span class="warning-text">💡 {sel_idx}. {selected}： 別の視点</span>', unsafe_allow_html=True)
+            st.markdown(f'<p class="warning-text">💡 {sel_idx}. {selected} （別の響き）</p>', unsafe_allow_html=True)
         
-        st.markdown(f"**【解説】** \n{q['feedback'][selected]}")
+        st.write(f"{q['feedback'][selected]}")
         st.markdown('</div>', unsafe_allow_html=True)
         
         st.write("")
