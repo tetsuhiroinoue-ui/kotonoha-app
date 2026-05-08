@@ -22,42 +22,44 @@ st.markdown("""
     .sub-title { color: #789278 !important; text-align: center; font-size: 1.1rem; margin-bottom: 2.5rem; }
     
     /* ホーム画面のメインボタン（丸を維持） */
-    div.stButton > button {
+    .home-nav div.stButton > button {
         border-radius: 50% !important;
         width: 130px !important;
         height: 130px !important;
+        aspect-ratio: 1 / 1 !important;
+    }
+
+    /* ① ホームへ戻るボタン（カプセル型を解除し、角丸四角形に強制） */
+    .back-btn div.stButton > button {
+        border-radius: 8px !important; /* 角丸四角形 */
+        width: 160px !important;
+        height: 48px !important;
+        aspect-ratio: auto !important;
+        font-size: 1rem !important;
+        margin-bottom: 20px;
+    }
+
+    /* ② クイズ回答ボタン（角丸四角形に強制） */
+    .quiz-area div.stButton > button {
+        border-radius: 8px !important; /* 角丸四角形 */
+        width: 100% !important;
+        height: auto !important;
+        aspect-ratio: auto !important;
+        padding: 1rem !important;
+        font-weight: 400 !important;
+    }
+
+    /* 共通ボタン基本色 */
+    div.stButton > button {
         background-color: white !important;
         color: #4a5d4a !important;
         border: 2px solid #e0ede0 !important;
         box-shadow: 0 4px 12px rgba(120, 146, 120, 0.1) !important;
-        font-size: 1.2rem !important;
-        font-weight: 700 !important;
         transition: all 0.3s ease;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        line-height: 1.3 !important;
-    }
-
-    /* ① ホームへ戻るボタン（角丸四角形へ強制変更） */
-    .back-btn div.stButton > button {
-        border-radius: 8px !important;
-        width: 160px !important;
-        height: 48px !important;
-        font-size: 1rem !important;
-        aspect-ratio: auto !important;
-        margin-bottom: 20px;
-    }
-
-    /* ② クイズ回答ボタン（角丸四角形へ強制変更） */
-    .quiz-area div.stButton > button {
-        border-radius: 8px !important;
-        width: 100% !important;
-        height: auto !important;
-        aspect-ratio: auto !important;
-        padding: 0.8rem !important;
-        font-weight: 400 !important;
     }
 
     /* ③ 💡スタイルのフィードバック */
@@ -99,7 +101,7 @@ st.markdown("""
 if 'all_questions' not in st.session_state:
     raw_data = [
         ("うるさい", ["活気がある", "元気がある", "賑やか", "声が通る"], "活気がある", "場のエネルギーとして捉えます。"),
-        ("理屈っぽい", ["論理的である", "頭が良い", "説明が丁寧", "こだわりがある"], "論理적である", "知的な能力への敬意に変えます。"),
+        ("理屈っぽい", ["論理的である", "頭が良い", "説明が丁寧", "こだわりがある"], "論理的である", "知的な能力への敬意に変えます。"),
         ("飽きっぽい", ["好奇心が旺盛", "行動が早い", "流行に敏感", "多趣味"], "好奇心が旺盛", "未知への探索意欲として肯定します。"),
         ("頑固", ["自分を持っている", "意思が強い", "真面目", "ぶれない"], "自分を持っている", "自立した軸があることを尊重します。"),
         ("優柔不断", ["思慮深い", "慎重である", "人の意見を尊重する", "柔軟である"], "思慮深い", "深く丁寧に考えている証拠です。"),
@@ -126,6 +128,7 @@ st.title("言の葉 🌿")
 # --- ホーム画面 ---
 if st.session_state.page == "ホーム":
     st.markdown('<p class="sub-title">〜トゲのある言葉を、美しい言葉に〜</p>', unsafe_allow_html=True)
+    st.markdown('<div class="home-nav">', unsafe_allow_html=True)
     col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("🌿\n問題"): change_page("クイズ")
@@ -133,6 +136,7 @@ if st.session_state.page == "ホーム":
         if st.button("📖\n一覧表"): change_page("一覧表")
     with col3:
         if st.button("🏷️\n栞"): change_page("栞")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # --- クイズ画面 ---
 elif st.session_state.page == "クイズ":
@@ -160,7 +164,6 @@ elif st.session_state.page == "クイズ":
     st.markdown('</div>', unsafe_allow_html=True)
 
     if st.session_state.get('show_result'):
-        # ③ 💡スタイルでの正解・見解表示
         st.markdown(f"""
             <div class="feedback-box">
                 <div><span class="feedback-lightbulb">💡</span> <b>正解: {q['answer']}</b></div>
