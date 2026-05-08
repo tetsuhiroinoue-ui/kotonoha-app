@@ -75,7 +75,6 @@ if st.session_state.index < len(questions):
     q = questions[st.session_state.index]
     st.write(f"#### 第 {st.session_state.index + 1} 問")
     
-    # ① 問題文の形式を復元
     st.markdown(f"""
         <div style="background: linear-gradient(135deg, #f0f7f0 0%, #ffffff 100%); padding: 1.2rem; border-radius: 20px; border: 1px solid #eef5ee; margin-bottom: 1rem;">
             <p style="margin:0; font-size: 0.9rem; color: #789278;">トゲのある言葉：</p>
@@ -102,7 +101,6 @@ if st.session_state.index < len(questions):
         sel_idx = st.session_state.selected_index
         
         st.markdown('<div class="result-container">', unsafe_allow_html=True)
-        # ② アイコンをお花（🌸）に統一
         if selected == q['answer']:
             st.markdown(f'<p class="success-text">🌸 {sel_idx}. {selected} （正解）</p>', unsafe_allow_html=True)
         else:
@@ -116,10 +114,10 @@ if st.session_state.index < len(questions):
             st.session_state.show_result = False
             st.rerun()
 else:
-    # ③ 雪や風船の代わりに、花（雪エフェクトの絵文字版）を降らせる
-    st.snow() 
+    # エフェクトを削除しました
     st.success("全ての言の葉を整えました。")
     st.subheader(f"あなたの言の葉スコア: {st.session_state.score} / {len(questions)}")
+    st.write("言葉を変えれば、世界の見え方が変わります。")
     if st.button("最初から自分を磨く"):
         st.session_state.index, st.session_state.score = 0, 0
         st.rerun()
