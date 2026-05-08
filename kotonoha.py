@@ -45,44 +45,43 @@ st.markdown("""
         background-color: #f0f7f0 !important;
     }
 
-    /* ① & ② ホーム画面に戻るボタン（横長の丸・テキスト変更） */
+    /* ① ホームへ戻るボタン（角丸四角形に変更） */
     .back-btn div.stButton > button {
-        width: 140px !important; /* 横長に調整 */
-        height: 45px !important;  /* 高さを抑える */
+        width: 140px !important;
+        height: 45px !important;
         font-size: 0.95rem !important;
-        border-radius: 25px !important; /* 丸みを帯びたカプセル型 */
+        border-radius: 8px !important; /* 角丸四角形 */
         margin-bottom: 20px;
-        aspect-ratio: auto !important; /* 正円解除 */
+        aspect-ratio: auto !important;
     }
 
-    /* クイズ回答ボタン設定（丸くしない） */
+    /* ② クイズ回答ボタン（角丸四角形に変更） */
     .quiz-area div.stButton > button {
-        border-radius: 12px !important;
+        border-radius: 8px !important; /* 角丸四角形 */
         width: 100% !important;
         height: auto !important;
         aspect-ratio: auto !important;
         padding: 0.8rem !important;
     }
 
-    /* 一覧表のデザイン（指示に基づきNo列を追加） */
+    /* 一覧表のデザイン（④ 白い四角などの不要要素を排除） */
     .list-container {
-        background: white;
-        padding: 1rem;
-        border-radius: 15px;
-        border: 1px solid #eef5ee;
+        background: transparent; /* 背景を透明化して四角い枠を排除 */
+        padding: 0;
+        margin-top: 1rem;
     }
     .list-row {
         display: flex;
         justify-content: space-between;
-        padding: 1.2rem 0.5rem;
-        border-bottom: 1px solid #f9f9f9;
+        padding: 1rem 0.5rem;
+        border-bottom: 1px solid #eef5ee;
         font-size: 1rem;
     }
     .list-header {
         display: flex;
         justify-content: space-between;
-        padding: 0.5rem;
-        border-bottom: 2px solid #eef5ee;
+        padding: 0.8rem 0.5rem;
+        border-bottom: 2px solid #4a5d4a;
         font-weight: bold;
         color: #4a5d4a;
     }
@@ -97,14 +96,14 @@ if 'all_questions' not in st.session_state:
     raw_data = [
         ("うるさい", ["活気がある", "元気がある", "賑やか", "声が通る"], "活気がある", "場のエネルギーとして捉えます。"),
         ("理屈っぽい", ["論理的である", "頭が良い", "説明が丁寧", "こだわりがある"], "論理的である", "知的な能力への敬意に変えます。"),
-        ("飽きっぽい", ["好奇心が旺盛", "行動が早い", "流行に敏感", "多趣味"], "好奇心が旺盛", "未知への探索意欲として肯定します。"),
-        ("頑固", ["自分を持っている", "意思が強い", "真面目", "ぶれない"], "自分を持っている", "自立した軸があることを尊重します。"),
-        ("優柔不断", ["思慮深い", "慎重である", "人の意見を尊重する", "柔軟である"], "思慮深い", "深く丁寧に考えている証拠です。"),
+        ("飽きっぽい", ["好奇心が旺盛", "行動が早い", "流行に敏感", "多趣味"], "好奇心が旺盛", "継続のなさを、未知への探索意欲として肯定します。"),
+        ("頑固", ["自分を持っている", "意思が強い", "真面目", "ぶれない"], "自分を持っている", "拒絶ではなく、自立した軸があることを尊重します。"),
+        ("優柔不断", ["思慮深い", "慎重である", "人の意見を尊重する", "柔軟である"], "思慮深い", "決められないのではなく、深く丁寧に考えている証拠です。"),
         ("ケチ", ["経済観念がある", "節約家", "質素", "管理が行き届いている"], "経済観念がある", "無駄を省く知性的な管理能力です。"),
-        ("気が短い", ["スピード感がある", "情熱的", "決断が早い", "感受性が豊か"], "スピード感がある", "物事を進める速さを評価します。"),
-        ("おせっかい", ["面倒見が良い", "社交的", "気が利く", "愛情深い"], "面倒見が良い", "他者への献身的なサポートに変えます。"),
-        ("生意気", ["物怖じしない", "堂々としている", "自信がある", "頼もしい"], "物怖じしない", "度胸への評価に変換します。"),
-        ("いい加減", ["大らか", "細かいことにこだわらない", "柔軟性が高い", "適応力がある"], "大らか", "余裕のある器の大きさに捉え直します。"),
+        ("気が短い", ["スピード感がある", "情熱的", "決断が早い", "感受性が豊か"], "スピード感がある", "怒りではなく、物事を進める速さを評価します。"),
+        ("おせっかい", ["面倒見が良い", "社交的", "気が利く", "愛情深い"], "面倒見が良い", "干渉を、他者への献身的なサポートに変えます。"),
+        ("生意気", ["物怖じしない", "堂々としている", "自信がある", "頼もしい"], "物怖じしない", "上下関係の不快感を、度胸への評価に変換します。"),
+        ("いい加減", ["大らか", "細かいことにこだわらない", "柔軟性が高い", "適応力がある"], "大らか", "雑さを、余裕のある器の大きさに捉え直します。"),
     ]
     while len(raw_data) < 100: raw_data.extend(raw_data[:100-len(raw_data)])
     st.session_state.all_questions = [{"id": i, "word": d[0], "options": d[1], "answer": d[2], "feedback": d[3]} for i, d in enumerate(raw_data)]
@@ -170,13 +169,13 @@ elif st.session_state.page == "一覧表":
     st.markdown('<div class="back-btn">', unsafe_allow_html=True)
     if st.button("ホームへ戻る"): change_page("ホーム")
     st.markdown('</div>', unsafe_allow_html=True)
-    st.subheader("📖 一覧表")
+    # ③ 本のマークを削除
+    st.subheader("一覧表")
     
     st.markdown('<div class="list-container">', unsafe_allow_html=True)
-    # ③ No.列を追加したヘッダー
+    # ④ 余計な隙間を排除したヘッダー
     st.markdown('<div class="list-header"><div class="col-no">No.</div><div class="col-word">トゲのある言葉</div><div class="col-ans">美しい言葉</div></div>', unsafe_allow_html=True)
     
-    # ③ 1番から順に表示
     for i, q in enumerate(st.session_state.all_questions[:100]):
         st.markdown(f"""
             <div class="list-row">
