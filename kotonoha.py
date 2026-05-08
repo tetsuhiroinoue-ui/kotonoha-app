@@ -74,4 +74,64 @@ questions = [
         "options": ["好奇心が旺盛", "行動が早い", "流行に敏感", "多趣味"],
         "answer": "好奇心が旺盛",
         "feedback": {
-            "好奇心が旺盛": "【最適解の理由】「続かない（継続の欠
+            "好奇心が旺盛": "【最適解の理由】「続かない（継続の欠如）」というネガティブな結果ではなく、「新しいものを見つける（探索の意欲）」というポジティブな動機に光を当てます。本人の内面的なエネルギーを最も肯定できる表現です。",
+            "行動が早い": "着手の速さは伝わりますが、「すぐに投げ出す」ことへのフォローになっていないため、無責任な印象が残る場合があります。",
+            "流行に敏感": "外面的な影響を受けやすいというニュアンスが含まれ、本人の主体的な意志を低く見積もってしまう懸念があります。",
+            "多趣味": "状態の肯定にはなりますが、一つのことを深く掘り下げられないことへの劣等感を払拭するまでには至りません。"
+        }
+    },
+    {
+        "word": "「頑固」",
+        "options": ["意思が強い", "真面目", "自分を持っている", "ぶれない"],
+        "answer": "自分を持っている",
+        "feedback": {
+            "意思が強い": "力強い表現ですが、衝突している場面では「意固地」「柔軟性がない」という対立構造を強めてしまうことがあります。",
+            "真面目": "規律を守る印象は与えますが、頑固な人が大切にしている「独自のこだわり」や「哲学」を表現しきれません。",
+            "自分を持っている": "【最適解の理由】「他人の意見を聞かない」という拒絶を、「自分の軸がある（自立）」という美徳に転換します。相手のアイデンティティを尊重しつつ、対等な関係を築くための魔法の言葉です。",
+            "ぶれない": "目標に対しては良い言葉ですが、日常の性格的な頑なさを表現すると、少し冷たい印象を与える場合があります。"
+        }
+    }
+]
+
+if 'index' not in st.session_state:
+    st.session_state.index, st.session_state.score, st.session_state.show_result = 0, 0, False
+
+if st.session_state.index < len(questions):
+    q = questions[st.session_state.index]
+    st.write(f"### 問題 {st.session_state.index + 1} / {len(questions)}")
+    
+    st.info(f"トゲのある言葉：  \n**{q['word']}**")
+    st.write("どの言葉に言い換えるのが、最も心地よく伝わるでしょうか？")
+    
+    cols = st.columns(2)
+    for i, option in enumerate(q['options']):
+        with cols[i % 2]:
+            if st.button(option, key=f"btn_{st.session_state.index}_{i}"):
+                st.session_state.selected_option = option
+                if option == q['answer']:
+                    st.session_state.score += 1
+                st.session_state.show_result = True
+
+    if st.session_state.show_result:
+        selected = st.session_state.selected_option
+        if selected == q['answer']:
+            st.success(f"**【{selected}】を選択： 🌿 言の葉として美しい選択です。**")
+        else:
+            # 警告枠内の文字色も考慮してデザイン
+            st.warning(f"**【{selected}】を選択： 別の響き方を確認しましょう。**")
+        
+        st.markdown(f"#### 🔍 なぜその言葉（選択肢）なのか？")
+        st.write(q['feedback'][selected])
+        
+        st.markdown("---")
+        if st.button("次の知恵へ進む ➔"):
+            st.session_state.index += 1
+            st.session_state.show_result = False
+            st.rerun()
+else:
+    st.snow()
+    st.success("全ての言の葉を整えました。")
+    st.subheader(f"あなたの言の葉スコア: {st.session_state.score} / {len(questions)}")
+    if st.button("最初から自分を磨く"):
+        st.session_state.index, st.session_state.score = 0, 0
+        st.rerun()
