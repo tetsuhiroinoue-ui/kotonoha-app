@@ -1,0 +1,71 @@
+import streamlit as st
+
+# アプリのタイトルと設定
+st.set_page_config(page_title="言の葉🌿", page_icon="🌿")
+st.title("言の葉 🌿")
+st.write("〜トゲのある言葉を、柔らかい表現に言い換える〜")
+
+# クイズのデータ
+questions = [
+    {
+        "word": "「うるさい」",
+        "options": ["元気がある", "活気がある", "声が通る", "賑やか"],
+        "answer": "活気がある",
+        "comment": "「うるさい」を「活気が溢れていますね」と言うだけで、場の雰囲気がポジティブに変わります。"
+    },
+    {
+        "word": "「理屈っぽい」",
+        "options": ["頭が固い", "論理的である", "話し好き", "こだわりがある"],
+        "answer": "論理的である",
+        "comment": "否定的に捉えず、知的な側面である「論理的（ロジカル）」という言葉を選んでみましょう。"
+    },
+    {
+        "word": "「飽きっぽい」",
+        "options": ["好奇心が旺盛", "行動が早い", "流行に敏感", "多趣味"],
+        "answer": "好奇心が旺盛",
+        "comment": "一つのことに絞れないのではなく、新しいものに目を向けるエネルギーがあると言い換えられます。"
+    }
+]
+
+# セッション状態の初期化（何問目かを保持）
+if 'index' not in st.session_state:
+    st.session_state.index = 0
+    st.session_state.score = 0
+    st.session_state.show_result = False
+
+# クイズ画面の表示
+if st.session_state.index < len(questions):
+    q = questions[st.session_state.index]
+    
+    st.subheader(f"問題 {st.session_state.index + 1}")
+    st.info(f"トゲのある言葉： **{q['word']}**")
+    st.write("この言葉を、相手を尊重する「言の葉」に言い換えると？")
+
+    # 4択ボタン
+    for option in q['options']:
+        if st.button(option):
+            if option == q['answer']:
+                st.success("正解です！ 🌿")
+                st.session_state.score += 1
+            else:
+                st.error(f"正解は「{q['answer']}」でした。")
+            
+            st.write(f"【解説】: {q['comment']}")
+            st.session_state.show_result = True
+
+    # 次の問題へ進むボタン
+    if st.session_state.show_result:
+        if st.button("次の問題へ"):
+            st.session_state.index += 1
+            st.session_state.show_result = False
+            st.rerun()
+
+else:
+    # 終了画面
+    st.balloons()
+    st.subheader("クイズ終了！")
+    st.write(f"あなたのスコア: {st.session_state.score} / {len(questions)}")
+    if st.button("最初から挑戦する"):
+        st.session_state.index = 0
+        st.session_state.score = 0
+        st.rerun()
