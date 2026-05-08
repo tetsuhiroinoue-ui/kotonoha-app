@@ -17,9 +17,23 @@ st.markdown(f"""
 st.markdown("""
     <style>
     .stApp { background-color: #fdfefd; background-image: radial-gradient(#eef5ee 1px, transparent 1px); background-size: 20px 20px; }
-    h1 { color: #4a5d4a !important; font-family: 'Hiragino Mincho ProN', serif; }
-    .stButton>button { border-radius: 20px; border: 1px solid #e0ede0; background-color: white; color: #4a5d4a; transition: 0.3s; width: 100%; font-weight: bold; }
+    h1, h2, h3 { color: #4a5d4a !important; font-family: 'Hiragino Mincho ProN', serif; text-align: center; }
+    
+    /* 丸いメインボタンのスタイル */
+    .menu-btn-container { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 2rem; }
+    .stButton>button { 
+        border-radius: 25px; border: 1px solid #e0ede0; 
+        background-color: white; color: #4a5d4a; 
+        font-weight: bold; padding: 0.8rem;
+    }
     .stButton>button:hover { border-color: #789278; background-color: #f0f7f0; }
+
+    /* メインメニュー用の大きな丸いボタン */
+    div[data-testid="column"] > div > .stButton > button {
+        height: 120px; width: 120px; border-radius: 50% !important;
+        font-size: 1.1rem; box-shadow: 0 4px 15px rgba(120, 146, 120, 0.1);
+    }
+
     .result-container { padding: 1rem 0; margin-top: 0.5rem; border-top: 1px solid #eef5ee; }
     .success-text { color: #5a855a; font-weight: bold; }
     .warning-text { color: #a68b36; font-weight: bold; }
@@ -59,7 +73,7 @@ if 'all_questions' not in st.session_state:
         ("引っ込み思案", ["一歩下がって全体が見れる", "謙虚", "落ち着きがある", "慎重"], "一歩下がって全体が見れる", "消極性を、客観的な視点を持っている強みに変えます。"),
         ("こだわりが強い", ["専門性を追求している", "美意識が高い", "妥協しない", "徹底している"], "専門性を追求している", "面倒な執着を、卓越したプロ意識として肯定します。"),
         ("そそっかしい", ["行動が早い", "直感的", "エネルギッシュ", "物怖じしない"], "行動が早い", "ミスの多さを、スピード感ある実行力として捉えます。"),
-        ("口が悪い", ["裏表がない", "率直", "情熱的", "素直"], "裏表がない", "無礼さを、嘘をつけない真っ直ぐな性格として評価します。"),
+        ("口が悪い", ["裏表がない", "率直", "情熱的", "素真直"], "裏表がない", "無礼さを、嘘をつけない真っ直ぐな性格として評価します。"),
         ("目立ちたがり", ["自己プロデュースが上手い", "華がある", "堂々としている", "表現力が豊か"], "自己プロデュースが上手い", "承認欲求を、自分を表現する技術として肯定します。"),
         ("計画性がない", ["今を大切にしている", "柔軟", "即断即決", "フットワークが軽い"], "今を大切にしている", "無計画さを、瞬間を生きる活力として捉え直します。"),
         ("怠慢", ["効率を重視している", "リラックスしている", "大らか", "マイペース"], "効率を重視している", "サボりを、最小限の力で成果を出す知恵として表現します。"),
@@ -142,22 +156,31 @@ def change_page(page_name):
     st.session_state.page = page_name
     st.session_state.show_result = False
 
-# --- 4. メインUI ---
+# --- 4. ページ表示ロジック ---
+
+# メニューに関わらず常にタイトルは表示
 st.title("言の葉 🌿")
-nav_cols = st.columns(3)
-with nav_cols[0]:
-    if st.button("🏠 ホーム"): change_page("ホーム")
-with nav_cols[1]:
-    if st.button("📖 一覧表"): change_page("一覧表")
-with nav_cols[2]:
-    if st.button("🔖 栞"): change_page("栞")
 
-st.markdown("---")
-
-# --- ホームページ（クイズ） ---
+# --- ホーム画面（メインメニュー） ---
 if st.session_state.page == "ホーム":
+    st.caption("〜言葉の角を丸く、心を柔らかく〜")
+    
+    st.write("## ") # 余白
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        if st.button("📖\n一覧表"): change_page("一覧表")
+    with col2:
+        if st.button("🔖\n栞"): change_page("栞")
+    with col3:
+        if st.button("🌿\n問題"): change_page("クイズ")
+
+# --- クイズ画面 ---
+elif st.session_state.page == "クイズ":
     idx = st.session_state.quiz_index
     q = st.session_state.all_questions[idx]
+    
+    if st.button("← ホームへ"): change_page("ホーム")
     
     col_q, col_fav = st.columns([0.85, 0.15])
     with col_q:
@@ -177,9 +200,9 @@ if st.session_state.page == "ホーム":
     """, unsafe_allow_html=True)
 
     opt_list = q['options']
-    row1_cols = st.columns(2)
-    row2_cols = st.columns(2)
-    all_cols = [row1_cols[0], row1_cols[1], row2_cols[0], row2_cols[1]]
+    r1_c1, r1_c2 = st.columns(2)
+    r2_c1, r2_c2 = st.columns(2)
+    all_cols = [r1_c1, r1_c2, r2_c1, r2_c2]
     
     for i in range(4):
         with all_cols[i]:
@@ -194,7 +217,8 @@ if st.session_state.page == "ホーム":
             st.markdown(f'<p class="success-text">🌸 {selected} （正解）</p>', unsafe_allow_html=True)
         else:
             st.markdown(f'<p class="warning-text">🌸 {selected} （別の視点）</p>', unsafe_allow_html=True)
-        st.write(q['feedback'])
+        # ① 解説の表示
+        st.write(f"**見解:** {q['feedback']}")
         st.markdown('</div>', unsafe_allow_html=True)
         
         if st.button("次の問題へ ➔"):
@@ -204,18 +228,21 @@ if st.session_state.page == "ホーム":
 
 # --- 一覧表ページ ---
 elif st.session_state.page == "一覧表":
+    if st.button("← ホームへ"): change_page("ホーム")
     st.subheader("📖 言の葉 一覧表")
-    st.caption("クリックすると正解と解説が表示されます")
+    
+    # ④ 白紙だった一覧表を修正：全データをテーブル形式で表示
     for q in st.session_state.all_questions:
-        with st.expander(f"「{q['word']}」"):
-            st.write(f"**正解:** {q['answer']}")
-            st.write(f"**解説:** {q['feedback']}")
+        with st.expander(f"「{q['word']}」の言い換え"):
+            st.write(f"**🌿 美しい表現:** {q['answer']}")
+            st.write(f"**💡 見解:** {q['feedback']}")
 
 # --- 栞ページ ---
 elif st.session_state.page == "栞":
+    if st.button("← ホームへ"): change_page("ホーム")
     st.subheader("🔖 栞（お気に入り）")
     if not st.session_state.favorites:
-        st.info("問題の星マークをタップするとここに保存されます。")
+        st.info("まだ栞に登録された言葉はありません。問題の星マークをタップして保存しましょう。")
     else:
         for q_id in st.session_state.favorites:
             q = next(item for item in st.session_state.all_questions if item["id"] == q_id)
