@@ -3,14 +3,13 @@ import streamlit as st
 # --- 1. デザイン & BGM設定 ---
 st.set_page_config(page_title="言の葉🌿", page_icon="🌿")
 
-# BGMの設定（より確実な再生のための調整）
+# BGMの設定
 bgm_url = "https://jsndyjh.github.io/music/loop_music.mp3"
 st.markdown(f"""
     <audio id="bgm" src="{bgm_url}" loop autoplay></audio>
     <script>
         var audio = document.getElementById('bgm');
         audio.volume = 0.2;
-        // 画面のどこをクリックしても再生を開始する
         window.parent.document.body.addEventListener('mousedown', function() {{
             audio.play();
         }}, {{ once: true }});
@@ -22,15 +21,10 @@ st.markdown(f"""
 
 st.markdown("""
     <style>
-    /* 全体の背景 */
     .stApp { background-color: #fdfefd; background-image: radial-gradient(#eef5ee 1px, transparent 1px); background-size: 20px 20px; }
-    
-    /* ③ タイトル周りの余白を詰める */
     .block-container { padding-top: 2rem !important; }
     h1 { color: #4a5d4a !important; font-family: 'Hiragino Mincho ProN', serif; font-weight: normal; margin-bottom: 0 !important; }
     .stCaption { color: #789278 !important; margin-top: -10px !important; margin-bottom: 1rem !important; }
-
-    /* 選択肢ボタン */
     .stButton>button { 
         border-radius: 25px; border: 2px solid #e0ede0; 
         background-color: rgba(255, 255, 255, 0.8); 
@@ -38,17 +32,9 @@ st.markdown("""
         padding: 0.8rem; transition: all 0.3s;
     }
     .stButton>button:hover { border-color: #789278; background-color: #f0f7f0; }
-    
-    /* ④ 解説セクション：白い枠を消して下線のみのシンプルなデザインに */
-    .result-container {
-        padding: 1rem 0;
-        margin-top: 0.5rem;
-        border-top: 1px solid #eef5ee;
-    }
-
+    .result-container { padding: 1rem 0; margin-top: 0.5rem; border-top: 1px solid #eef5ee; }
     .success-text { color: #5a855a; font-weight: bold; font-size: 1.1rem; }
     .warning-text { color: #a68b36; font-weight: bold; font-size: 1.1rem; }
-    
     p { color: #4a5d4a !important; }
     </style>
     """, unsafe_allow_html=True)
@@ -89,9 +75,11 @@ if st.session_state.index < len(questions):
     q = questions[st.session_state.index]
     st.write(f"#### 第 {st.session_state.index + 1} 問")
     
+    # ① 問題文の形式を復元
     st.markdown(f"""
-        <div style="background: linear-gradient(135deg, #f0f7f0 0%, #ffffff 100%); padding: 1rem; border-radius: 20px; text-align: center; margin-bottom: 1rem; border: 1px solid #eef5ee;">
-            <strong style="font-size: 1.6rem; color: #789278;">{q['word']}</strong>
+        <div style="background: linear-gradient(135deg, #f0f7f0 0%, #ffffff 100%); padding: 1.2rem; border-radius: 20px; border: 1px solid #eef5ee; margin-bottom: 1rem;">
+            <p style="margin:0; font-size: 0.9rem; color: #789278;">トゲのある言葉：</p>
+            <strong style="font-size: 1.5rem; color: #4a5d4a;">{q['word']}</strong>
         </div>
     """, unsafe_allow_html=True)
 
@@ -114,10 +102,11 @@ if st.session_state.index < len(questions):
         sel_idx = st.session_state.selected_index
         
         st.markdown('<div class="result-container">', unsafe_allow_html=True)
+        # ② アイコンをお花（🌸）に統一
         if selected == q['answer']:
-            st.markdown(f'<p class="success-text">🌿 {sel_idx}. {selected} （正解）</p>', unsafe_allow_html=True)
+            st.markdown(f'<p class="success-text">🌸 {sel_idx}. {selected} （正解）</p>', unsafe_allow_html=True)
         else:
-            st.markdown(f'<p class="warning-text">💡 {sel_idx}. {selected} （別の響き）</p>', unsafe_allow_html=True)
+            st.markdown(f'<p class="warning-text">🌸 {sel_idx}. {selected} （別の響き）</p>', unsafe_allow_html=True)
         
         st.write(f"{q['feedback'][selected]}")
         st.markdown('</div>', unsafe_allow_html=True)
@@ -127,8 +116,8 @@ if st.session_state.index < len(questions):
             st.session_state.show_result = False
             st.rerun()
 else:
-    # ① 雪の代わりにバルーン（お祝い感）を表示
-    st.balloons()
+    # ③ 雪や風船の代わりに、花（雪エフェクトの絵文字版）を降らせる
+    st.snow() 
     st.success("全ての言の葉を整えました。")
     st.subheader(f"あなたの言の葉スコア: {st.session_state.score} / {len(questions)}")
     if st.button("最初から自分を磨く"):
