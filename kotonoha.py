@@ -21,7 +21,7 @@ st.markdown("""
     h1 { color: #4a5d4a !important; text-align: center; margin-bottom: 0.5rem !important; font-size: 2.2rem !important; }
     .sub-title { color: #789278 !important; text-align: center; font-size: 1.1rem; margin-bottom: 2.5rem; }
     
-    /* ① ホーム画面のボタンを横並びに（丸形・太字は維持） */
+    /* ホーム画面のボタン（横並び・正円・太字を維持） */
     div.stButton > button {
         border-radius: 50% !important;
         width: 130px !important;
@@ -31,7 +31,7 @@ st.markdown("""
         border: 2px solid #e0ede0 !important;
         box-shadow: 0 4px 12px rgba(120, 146, 120, 0.1) !important;
         font-size: 1.2rem !important;
-        font-weight: 700 !important; /* 太字を維持 */
+        font-weight: 700 !important;
         transition: all 0.3s ease;
         display: flex;
         flex-direction: column;
@@ -45,13 +45,14 @@ st.markdown("""
         background-color: #f0f7f0 !important;
     }
 
-    /* ② 各ページのホームボタン（小型化） */
+    /* ① & ② ホーム画面に戻るボタン（横長の丸・テキスト変更） */
     .back-btn div.stButton > button {
-        width: 60px !important;
-        height: 60px !important;
-        font-size: 0.9rem !important;
-        border-radius: 15px !important;
+        width: 140px !important; /* 横長に調整 */
+        height: 45px !important;  /* 高さを抑える */
+        font-size: 0.95rem !important;
+        border-radius: 25px !important; /* 丸みを帯びたカプセル型 */
         margin-bottom: 20px;
+        aspect-ratio: auto !important; /* 正円解除 */
     }
 
     /* クイズ回答ボタン設定（丸くしない） */
@@ -63,7 +64,7 @@ st.markdown("""
         padding: 0.8rem !important;
     }
 
-    /* ③ 一覧表のフォント・色を「とげのある言葉」に統一 */
+    /* 一覧表のデザイン（指示に基づきNo列を追加） */
     .list-container {
         background: white;
         padding: 1rem;
@@ -75,7 +76,7 @@ st.markdown("""
         justify-content: space-between;
         padding: 1.2rem 0.5rem;
         border-bottom: 1px solid #f9f9f9;
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
     .list-header {
         display: flex;
@@ -85,12 +86,9 @@ st.markdown("""
         font-weight: bold;
         color: #4a5d4a;
     }
-    /* 両方の列を同じスタイル（#4a5d4a, 400ウェイト）に固定 */
-    .list-cell {
-        width: 45%;
-        color: #4a5d4a !important;
-        font-weight: 400 !important;
-    }
+    .col-no { width: 10%; color: #4a5d4a !important; font-weight: 400 !important; }
+    .col-word { width: 42%; color: #4a5d4a !important; font-weight: 400 !important; }
+    .col-ans { width: 42%; color: #4a5d4a !important; font-weight: 400 !important; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -122,7 +120,7 @@ def change_page(page_name):
 # --- 3. メイン表示 ---
 st.title("言の葉 🌿")
 
-# --- ホーム画面（横並び配置） ---
+# --- ホーム画面 ---
 if st.session_state.page == "ホーム":
     st.markdown('<p class="sub-title">〜トゲのある言葉を、美しい言葉に〜</p>', unsafe_allow_html=True)
     
@@ -137,7 +135,7 @@ if st.session_state.page == "ホーム":
 # --- クイズ画面 ---
 elif st.session_state.page == "クイズ":
     st.markdown('<div class="back-btn">', unsafe_allow_html=True)
-    if st.button("🏠"): change_page("ホーム")
+    if st.button("ホームへ戻る"): change_page("ホーム")
     st.markdown('</div>', unsafe_allow_html=True)
     
     idx = st.session_state.quiz_index
@@ -170,18 +168,21 @@ elif st.session_state.page == "クイズ":
 # --- 一覧表ページ ---
 elif st.session_state.page == "一覧表":
     st.markdown('<div class="back-btn">', unsafe_allow_html=True)
-    if st.button("🏠"): change_page("ホーム")
+    if st.button("ホームへ戻る"): change_page("ホーム")
     st.markdown('</div>', unsafe_allow_html=True)
     st.subheader("📖 一覧表")
     
     st.markdown('<div class="list-container">', unsafe_allow_html=True)
-    st.markdown('<div class="list-header"><div style="width:45%;">トゲのある言葉</div><div style="width:45%;">美しい言葉</div></div>', unsafe_allow_html=True)
+    # ③ No.列を追加したヘッダー
+    st.markdown('<div class="list-header"><div class="col-no">No.</div><div class="col-word">トゲのある言葉</div><div class="col-ans">美しい言葉</div></div>', unsafe_allow_html=True)
     
-    for q in st.session_state.all_questions[:100]:
+    # ③ 1番から順に表示
+    for i, q in enumerate(st.session_state.all_questions[:100]):
         st.markdown(f"""
             <div class="list-row">
-                <div class="list-cell">{q['word']}</div>
-                <div class="list-cell">{q['answer']}</div>
+                <div class="col-no">{i + 1}</div>
+                <div class="col-word">{q['word']}</div>
+                <div class="col-ans">{q['answer']}</div>
             </div>
         """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
@@ -189,7 +190,7 @@ elif st.session_state.page == "一覧表":
 # --- 栞ページ ---
 elif st.session_state.page == "栞":
     st.markdown('<div class="back-btn">', unsafe_allow_html=True)
-    if st.button("🏠"): change_page("ホーム")
+    if st.button("ホームへ戻る"): change_page("ホーム")
     st.markdown('</div>', unsafe_allow_html=True)
     st.subheader("🏷️ 栞（お気に入り）")
     
