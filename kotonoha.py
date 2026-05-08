@@ -16,27 +16,42 @@ st.markdown(f"""
 
 st.markdown("""
     <style>
-    .stApp { background-color: #fdfefd; background-image: radial-gradient(#eef5ee 1px, transparent 1px); background-size: 20px 20px; }
-    h1, h2, h3 { color: #4a5d4a !important; font-family: 'Hiragino Mincho ProN', serif; text-align: center; }
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap');
+
+    .stApp { 
+        background-color: #fdfefd; 
+        background-image: radial-gradient(#eef5ee 1px, transparent 1px); 
+        background-size: 20px 20px; 
+        font-family: 'Noto Serif JP', serif;
+    }
     
-    /* 丸いメインボタンのスタイル */
-    .menu-btn-container { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 2rem; }
+    h1 { color: #4a5d4a !important; text-align: center; margin-bottom: 0.2rem !important; }
+    .sub-title { color: #789278 !important; text-align: center; font-size: 0.9rem; margin-bottom: 2rem; }
+    
+    /* ボタンの共通設定 */
     .stButton>button { 
-        border-radius: 25px; border: 1px solid #e0ede0; 
+        border-radius: 20px; border: 1px solid #e0ede0; 
         background-color: white; color: #4a5d4a; 
-        font-weight: bold; padding: 0.8rem;
+        font-weight: bold; transition: 0.3s;
     }
     .stButton>button:hover { border-color: #789278; background-color: #f0f7f0; }
 
-    /* メインメニュー用の大きな丸いボタン */
-    div[data-testid="column"] > div > .stButton > button {
-        height: 120px; width: 120px; border-radius: 50% !important;
-        font-size: 1.1rem; box-shadow: 0 4px 15px rgba(120, 146, 120, 0.1);
+    /* ③ ホーム画面の大きなボタン設定 */
+    .home-btn-col .stButton > button {
+        height: 140px; width: 100%; border-radius: 30px !important;
+        font-size: 1.2rem; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        box-shadow: 0 4px 12px rgba(120, 146, 120, 0.1);
     }
 
-    .result-container { padding: 1rem 0; margin-top: 0.5rem; border-top: 1px solid #eef5ee; }
-    .success-text { color: #5a855a; font-weight: bold; }
-    .warning-text { color: #a68b36; font-weight: bold; }
+    /* ④ 栞のシンプルデザイン */
+    .fav-item { 
+        padding: 0.8rem; border-bottom: 1px solid #eee; margin-bottom: 0.5rem;
+        background: transparent; color: #4a5d4a;
+    }
+    .beige-icon { color: #d2b48c; font-size: 1.2rem; margin-right: 10px; }
+
+    /* 一覧表の文字色固定 */
+    .table-text { color: #4a5d4a !important; font-weight: 500; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -73,7 +88,7 @@ if 'all_questions' not in st.session_state:
         ("引っ込み思案", ["一歩下がって全体が見れる", "謙虚", "落ち着きがある", "慎重"], "一歩下がって全体が見れる", "消極性を、客観的な視点を持っている強みに変えます。"),
         ("こだわりが強い", ["専門性を追求している", "美意識が高い", "妥協しない", "徹底している"], "専門性を追求している", "面倒な執着を、卓越したプロ意識として肯定します。"),
         ("そそっかしい", ["行動が早い", "直感的", "エネルギッシュ", "物怖じしない"], "行動が早い", "ミスの多さを、スピード感ある実行力として捉えます。"),
-        ("口が悪い", ["裏表がない", "率直", "情熱的", "素真直"], "裏表がない", "無礼さを、嘘をつけない真っ直ぐな性格として評価します。"),
+        ("口が悪い", ["裏表がない", "率直", "情熱的", "素直"], "裏表がない", "無礼さを、嘘をつけない真っ直ぐな性格として評価します。"),
         ("目立ちたがり", ["自己プロデュースが上手い", "華がある", "堂々としている", "表現力が豊か"], "自己プロデュースが上手い", "承認欲求を、自分を表現する技術として肯定します。"),
         ("計画性がない", ["今を大切にしている", "柔軟", "即断即決", "フットワークが軽い"], "今を大切にしている", "無計画さを、瞬間を生きる活力として捉え直します。"),
         ("怠慢", ["効率を重視している", "リラックスしている", "大らか", "マイペース"], "効率を重視している", "サボりを、最小限の力で成果を出す知恵として表現します。"),
@@ -118,7 +133,7 @@ if 'all_questions' not in st.session_state:
         ("偏屈", ["こだわりを貫いている", "信念がある", "個性的", "思慮深い"], "こだわりを貫いている", "ひねくれを、妥協せずに自分の正義を守る姿勢とします。"),
         ("卑屈", ["謙虚で慎ましい", "客観的", "穏やか", "配慮がある"], "謙虚で慎ましい", "自信のなさを、相手を敬う奥ゆかしさとして表現します。"),
         ("高圧的", ["リーダーシップが強い", "堂々としている", "責任感がある", "頼もしい"], "リーダーシップが強い", "威圧感を、集団を導く力強いエネルギーとして評価します。"),
-        ("おしゃべり", ["社交的で話題が豊富", "明るい", "サービス精神", "親しみやすい"], "社交的で話題が豊富", "うるささを、コミュニケーションを活性化させる才能とします。"),
+        ("おしゃべる", ["社交的で話題が豊富", "明るい", "サービス精神", "親しみやすい"], "社交的で話題が豊富", "うるささを、コミュニケーションを活性化させる才能とします。"),
         ("強引", ["突破力がある", "決断が早い", "情熱的", "勇敢"], "突破力がある", "無理やりさを、現状を打開する強い行動力として肯定します。"),
         ("感情的", ["感受性が豊かで素直", "情熱的", "人間味がある", "温かい"], "感受性が豊かで素直", "理性のなさを、心が動かされる豊かな感性とします。"),
         ("退屈", ["安定していて穏やか", "安心感がある", "質実剛健", "平和"], "安定していて穏やか", "刺激のなさを、平穏で心地よい状態として表現します。"),
@@ -158,22 +173,28 @@ def change_page(page_name):
 
 # --- 4. ページ表示ロジック ---
 
-# メニューに関わらず常にタイトルは表示
 st.title("言の葉 🌿")
 
-# --- ホーム画面（メインメニュー） ---
+# --- ホーム画面 ---
 if st.session_state.page == "ホーム":
-    st.caption("〜言葉の角を丸く、心を柔らかく〜")
+    # ⑤ タイトルの下に説明を追加
+    st.markdown('<p class="sub-title">〜トゲのある言葉を、美しい言葉に〜</p>', unsafe_allow_html=True)
     
-    st.write("## ") # 余白
+    st.write("## ") 
+    # ③ ホーム画面のボタン配置とサイズ調整
     col1, col2, col3 = st.columns(3)
-    
     with col1:
-        if st.button("📖\n一覧表"): change_page("一覧表")
-    with col2:
-        if st.button("🔖\n栞"): change_page("栞")
-    with col3:
+        st.markdown('<div class="home-btn-col">', unsafe_allow_html=True)
         if st.button("🌿\n問題"): change_page("クイズ")
+        st.markdown('</div>', unsafe_allow_html=True)
+    with col2:
+        st.markdown('<div class="home-btn-col">', unsafe_allow_html=True)
+        if st.button("📖\n一覧表"): change_page("一覧表")
+        st.markdown('</div>', unsafe_allow_html=True)
+    with col3:
+        st.markdown('<div class="home-btn-col">', unsafe_allow_html=True)
+        if st.button("🔖\n栞"): change_page("栞")
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # --- クイズ画面 ---
 elif st.session_state.page == "クイズ":
@@ -193,19 +214,19 @@ elif st.session_state.page == "クイズ":
             st.rerun()
 
     st.markdown(f"""
-        <div style="background: white; padding: 1.2rem; border-radius: 20px; border: 1px solid #eef5ee; margin-bottom: 1rem;">
-            <p style="margin:0; font-size: 0.9rem; color: #789278;">トゲのある言葉：</p>
-            <strong style="font-size: 1.5rem; color: #4a5d4a;">{q['word']}</strong>
+        <div style="background: white; padding: 1.5rem; border-radius: 20px; border: 1px solid #eef5ee; margin-bottom: 1.5rem; text-align: center;">
+            <p style="margin:0; font-size: 0.9rem; color: #789278;">トゲのある言葉</p>
+            <strong style="font-size: 1.8rem; color: #4a5d4a;">{q['word']}</strong>
         </div>
     """, unsafe_allow_html=True)
 
     opt_list = q['options']
-    r1_c1, r1_c2 = st.columns(2)
-    r2_c1, r2_c2 = st.columns(2)
-    all_cols = [r1_c1, r1_c2, r2_c1, r2_c2]
+    c1, c2 = st.columns(2)
+    c3, c4 = st.columns(2)
+    cols = [c1, c2, c3, c4]
     
     for i in range(4):
-        with all_cols[i]:
+        with cols[i]:
             if st.button(f"{i+1}. {opt_list[i]}", key=f"opt_{i}"):
                 st.session_state.selected_option = opt_list[i]
                 st.session_state.show_result = True
@@ -217,7 +238,6 @@ elif st.session_state.page == "クイズ":
             st.markdown(f'<p class="success-text">🌸 {selected} （正解）</p>', unsafe_allow_html=True)
         else:
             st.markdown(f'<p class="warning-text">🌸 {selected} （別の視点）</p>', unsafe_allow_html=True)
-        # ① 解説の表示
         st.write(f"**見解:** {q['feedback']}")
         st.markdown('</div>', unsafe_allow_html=True)
         
@@ -231,27 +251,42 @@ elif st.session_state.page == "一覧表":
     if st.button("← ホームへ"): change_page("ホーム")
     st.subheader("📖 言の葉 一覧表")
     
-    # ④ 白紙だった一覧表を修正：全データをテーブル形式で表示
+    # ① 一覧表の簡略化 & ② フォントと視認性の向上
+    st.markdown("""
+        <div style="display: flex; justify-content: space-between; padding: 0.5rem; border-bottom: 2px solid #eef5ee; font-weight: bold; color: #4a5d4a;">
+            <div style="width: 45%;">トゲのある言葉</div>
+            <div style="width: 45%;">美しい言葉</div>
+        </div>
+    """, unsafe_allow_html=True)
+    
     for q in st.session_state.all_questions:
-        with st.expander(f"「{q['word']}」の言い換え"):
-            st.write(f"**🌿 美しい表現:** {q['answer']}")
-            st.write(f"**💡 見解:** {q['feedback']}")
+        st.markdown(f"""
+            <div style="display: flex; justify-content: space-between; padding: 0.8rem 0.5rem; border-bottom: 1px solid #f0f0f0; color: #4a5d4a;">
+                <div style="width: 45%;">{q['word']}</div>
+                <div style="width: 45%; font-weight: bold; color: #5a855a;">{q['answer']}</div>
+            </div>
+        """, unsafe_allow_html=True)
 
 # --- 栞ページ ---
 elif st.session_state.page == "栞":
     if st.button("← ホームへ"): change_page("ホーム")
     st.subheader("🔖 栞（お気に入り）")
+    
     if not st.session_state.favorites:
-        st.info("まだ栞に登録された言葉はありません。問題の星マークをタップして保存しましょう。")
+        st.info("まだ栞はありません。問題の星マークをタップして保存しましょう。")
     else:
+        # ④ 栞のデザインをシンプルに、色をベージュに
         for q_id in st.session_state.favorites:
             q = next(item for item in st.session_state.all_questions if item["id"] == q_id)
-            st.markdown(f"""
-                <div style="background: white; padding: 1rem; border-radius: 15px; margin-bottom: 10px; border: 1px solid #eef5ee;">
-                    🌸 <strong>{q['word']}</strong> → <strong>{q['answer']}</strong><br>
-                    <small style="color: #666;">{q['feedback']}</small>
-                </div>
-            """, unsafe_allow_html=True)
-            if st.button("栞を外す", key=f"del_{q_id}"):
-                st.session_state.favorites.remove(q_id)
-                st.rerun()
+            col_txt, col_del = st.columns([0.8, 0.2])
+            with col_txt:
+                st.markdown(f"""
+                    <div class="fav-item">
+                        <span class="beige-icon">🔖</span>
+                        <strong>{q['word']}</strong> → <span style="color: #5a855a;">{q['answer']}</span>
+                    </div>
+                """, unsafe_allow_html=True)
+            with col_del:
+                if st.button("外す", key=f"del_{q_id}"):
+                    st.session_state.favorites.remove(q_id)
+                    st.rerun()
