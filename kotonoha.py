@@ -21,7 +21,7 @@ st.markdown("""
     h1 { color: #4a5d4a !important; text-align: center; margin-bottom: 0.5rem !important; font-size: 2.2rem !important; }
     .sub-title { color: #789278 !important; text-align: center; font-size: 1.1rem; margin-bottom: 2.5rem; }
     
-    /* ホーム画面のボタン（横並び・正円・太字を維持） */
+    /* ホーム画面のメインボタン（丸を維持） */
     div.stButton > button {
         border-radius: 50% !important;
         width: 130px !important;
@@ -39,37 +39,42 @@ st.markdown("""
         justify-content: center;
         line-height: 1.3 !important;
     }
-    div.stButton > button:hover {
-        transform: translateY(-3px);
-        border-color: #789278 !important;
-        background-color: #f0f7f0 !important;
-    }
 
-    /* ① ホームへ戻るボタン（角丸四角形に変更） */
+    /* ① ホームへ戻るボタン（角丸四角形へ強制変更） */
     .back-btn div.stButton > button {
-        width: 140px !important;
-        height: 45px !important;
-        font-size: 0.95rem !important;
-        border-radius: 8px !important; /* 角丸四角形 */
-        margin-bottom: 20px;
+        border-radius: 8px !important;
+        width: 160px !important;
+        height: 48px !important;
+        font-size: 1rem !important;
         aspect-ratio: auto !important;
+        margin-bottom: 20px;
     }
 
-    /* ② クイズ回答ボタン（角丸四角形に変更） */
+    /* ② クイズ回答ボタン（角丸四角形へ強制変更） */
     .quiz-area div.stButton > button {
-        border-radius: 8px !important; /* 角丸四角形 */
+        border-radius: 8px !important;
         width: 100% !important;
         height: auto !important;
         aspect-ratio: auto !important;
         padding: 0.8rem !important;
+        font-weight: 400 !important;
     }
 
-    /* 一覧表のデザイン（④ 白い四角などの不要要素を排除） */
-    .list-container {
-        background: transparent; /* 背景を透明化して四角い枠を排除 */
-        padding: 0;
+    /* ③ 💡スタイルのフィードバック */
+    .feedback-box {
+        background-color: #fff9e6;
+        border-left: 5px solid #ffcc00;
+        padding: 1.5rem;
+        border-radius: 8px;
         margin-top: 1rem;
+        color: #4a5d4a;
     }
+    .feedback-lightbulb {
+        font-size: 1.5rem;
+        margin-right: 10px;
+    }
+
+    /* 一覧表スタイル */
     .list-row {
         display: flex;
         justify-content: space-between;
@@ -83,11 +88,10 @@ st.markdown("""
         padding: 0.8rem 0.5rem;
         border-bottom: 2px solid #4a5d4a;
         font-weight: bold;
-        color: #4a5d4a;
     }
-    .col-no { width: 10%; color: #4a5d4a !important; font-weight: 400 !important; }
-    .col-word { width: 42%; color: #4a5d4a !important; font-weight: 400 !important; }
-    .col-ans { width: 42%; color: #4a5d4a !important; font-weight: 400 !important; }
+    .col-no { width: 10%; color: #4a5d4a !important; }
+    .col-word { width: 42%; color: #4a5d4a !important; }
+    .col-ans { width: 42%; color: #4a5d4a !important; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -95,15 +99,15 @@ st.markdown("""
 if 'all_questions' not in st.session_state:
     raw_data = [
         ("うるさい", ["活気がある", "元気がある", "賑やか", "声が通る"], "活気がある", "場のエネルギーとして捉えます。"),
-        ("理屈っぽい", ["論理的である", "頭が良い", "説明が丁寧", "こだわりがある"], "論理的である", "知的な能力への敬意に変えます。"),
-        ("飽きっぽい", ["好奇心が旺盛", "行動が早い", "流行に敏感", "多趣味"], "好奇心が旺盛", "継続のなさを、未知への探索意欲として肯定します。"),
-        ("頑固", ["自分を持っている", "意思が強い", "真面目", "ぶれない"], "自分を持っている", "拒絶ではなく、自立した軸があることを尊重します。"),
-        ("優柔不断", ["思慮深い", "慎重である", "人の意見を尊重する", "柔軟である"], "思慮深い", "決められないのではなく、深く丁寧に考えている証拠です。"),
-        ("ケチ", ["経済観念がある", "節約家", "質素", "管理が行き届いている"], "経済観念がある", "無駄を省く知性的な管理能力です。"),
-        ("気が短い", ["スピード感がある", "情熱的", "決断が早い", "感受性が豊か"], "スピード感がある", "怒りではなく、物事を進める速さを評価します。"),
-        ("おせっかい", ["面倒見が良い", "社交的", "気が利く", "愛情深い"], "面倒見が良い", "干渉を、他者への献身的なサポートに変えます。"),
-        ("生意気", ["物怖じしない", "堂々としている", "自信がある", "頼もしい"], "物怖じしない", "上下関係の不快感を、度胸への評価に変換します。"),
-        ("いい加減", ["大らか", "細かいことにこだわらない", "柔軟性が高い", "適応力がある"], "大らか", "雑さを、余裕のある器の大きさに捉え直します。"),
+        ("理屈っぽい", ["論理的である", "頭が良い", "説明が丁寧", "こだわりがある"], "論理적である", "知的な能力への敬意に変えます。"),
+        ("飽きっぽい", ["好奇心が旺盛", "行動が早い", "流行に敏感", "多趣味"], "好奇心が旺盛", "未知への探索意欲として肯定します。"),
+        ("頑固", ["自分を持っている", "意思が強い", "真面目", "ぶれない"], "自分を持っている", "自立した軸があることを尊重します。"),
+        ("優柔不断", ["思慮深い", "慎重である", "人の意見を尊重する", "柔軟である"], "思慮深い", "深く丁寧に考えている証拠です。"),
+        ("ケチ", ["経済観念がある", "節約家", "質素", "管理が行き届いている"], "経済観念がある", "無駄を省く管理能力です。"),
+        ("気が短い", ["スピード感がある", "情熱的", "決断が早い", "感受性が豊か"], "スピード感がある", "物事を進める速さを評価します。"),
+        ("おせっかい", ["面倒見が良い", "社交的", "気が利く", "愛情深い"], "面倒見が良い", "他者への献身的なサポートです。"),
+        ("生意気", ["物怖じしない", "堂々としている", "自信がある", "頼もしい"], "物怖じしない", "度胸への評価に変換します。"),
+        ("いい加減", ["大らか", "細かいことにこだわらない", "柔軟性が高い", "適応力がある"], "大らか", "余裕のある器の大きさに捉え直します。"),
     ]
     while len(raw_data) < 100: raw_data.extend(raw_data[:100-len(raw_data)])
     st.session_state.all_questions = [{"id": i, "word": d[0], "options": d[1], "answer": d[2], "feedback": d[3]} for i, d in enumerate(raw_data)]
@@ -122,7 +126,6 @@ st.title("言の葉 🌿")
 # --- ホーム画面 ---
 if st.session_state.page == "ホーム":
     st.markdown('<p class="sub-title">〜トゲのある言葉を、美しい言葉に〜</p>', unsafe_allow_html=True)
-    
     col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("🌿\n問題"): change_page("クイズ")
@@ -157,8 +160,14 @@ elif st.session_state.page == "クイズ":
     st.markdown('</div>', unsafe_allow_html=True)
 
     if st.session_state.get('show_result'):
-        st.write("---")
-        st.info(f"正解: {q['answer']}\n\n見解: {q['feedback']}")
+        # ③ 💡スタイルでの正解・見解表示
+        st.markdown(f"""
+            <div class="feedback-box">
+                <div><span class="feedback-lightbulb">💡</span> <b>正解: {q['answer']}</b></div>
+                <div style="margin-top: 10px; font-size: 0.95rem;">{q['feedback']}</div>
+            </div>
+        """, unsafe_allow_html=True)
+        
         if st.button("次の言葉へ ➔"):
             st.session_state.quiz_index = (idx + 1) % 100
             st.session_state.show_result = False
@@ -169,13 +178,9 @@ elif st.session_state.page == "一覧表":
     st.markdown('<div class="back-btn">', unsafe_allow_html=True)
     if st.button("ホームへ戻る"): change_page("ホーム")
     st.markdown('</div>', unsafe_allow_html=True)
-    # ③ 本のマークを削除
     st.subheader("一覧表")
     
-    st.markdown('<div class="list-container">', unsafe_allow_html=True)
-    # ④ 余計な隙間を排除したヘッダー
     st.markdown('<div class="list-header"><div class="col-no">No.</div><div class="col-word">トゲのある言葉</div><div class="col-ans">美しい言葉</div></div>', unsafe_allow_html=True)
-    
     for i, q in enumerate(st.session_state.all_questions[:100]):
         st.markdown(f"""
             <div class="list-row">
@@ -184,7 +189,6 @@ elif st.session_state.page == "一覧表":
                 <div class="col-ans">{q['answer']}</div>
             </div>
         """, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
 
 # --- 栞ページ ---
 elif st.session_state.page == "栞":
